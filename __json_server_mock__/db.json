@@ -1,3 +1,25 @@
 {
-    "users": []
+  "users": [
+    {
+      "id": 1,
+      "name": "Peter"
+    },
+    {
+      "id": 2,
+      "name": "Tom"
+    },
+    {
+      "id": 3,
+      "name": "Candy"
+    }
+  ],
+  "projects": [
+    {
+      "id": 1,
+      "name": "骑手管理",
+      "personId": 1,
+      "organization": "外卖组",
+      "created": 1604989757139
+    }
+  ]
 }
