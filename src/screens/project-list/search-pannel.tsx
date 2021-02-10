@@ -17,6 +17,7 @@ interface SearchPannelProps {
   setParam: (param: SearchPannelProps["param"]) => void;
 }
 export const SearchPannel = ({ users, param, setParam }: SearchPannelProps) => {
+  console.log("users", users);
   return (
     <form>
       <input
@@ -39,8 +40,8 @@ export const SearchPannel = ({ users, param, setParam }: SearchPannelProps) => {
         }
       >
         <option value={""}>负责人</option>
-        {users.map((user, index) => (
-          <option key={index} value={user.personId}>
+        {users.map((user) => (
+          <option key={user.id} value={user.id}>
             {user.name}
           </option>
         ))}
