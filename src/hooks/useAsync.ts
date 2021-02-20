@@ -11,7 +11,15 @@ const defaultInitialState: State<null> = {
   error: null,
 };
 
-export const useAsync = <D>(initialState?: State<D>) => {
+const defaultInitConfig = {
+  throwOnError: false,
+};
+
+export const useAsync = <D>(
+  initialState?: State<D>,
+  initialConifg?: typeof defaultInitConfig
+) => {
+  const config = { ...defaultInitConfig, ...initialConifg };
   const [state, setState] = useState<State<D>>({
     ...defaultInitialState,
     ...initialState,
@@ -43,7 +51,9 @@ export const useAsync = <D>(initialState?: State<D>) => {
         return data;
       })
       .catch((error) => {
+        // catch 会消化异常导致不再抛出
         setError(error);
+        if (config.throwOnError) return Promise.reject(error);
         return error;
       });
   };
