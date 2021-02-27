@@ -43,3 +43,20 @@ export const useArray = <T>(arr: T[]) => {
     add,
   };
 };
+
+export const useDocumentTitle = (
+  title: string,
+  keepOnUmount: boolean = true
+) => {
+  const oldTitle = document.title;
+  useEffect(() => {
+    document.title = title;
+  }, [title]);
+  useEffect(() => {
+    return () => {
+      if (!keepOnUmount) {
+        document.title = oldTitle;
+      }
+    };
+  }, []);
+};
