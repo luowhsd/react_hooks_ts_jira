@@ -25,3 +25,5 @@ export const cleanObject = (object: { [key: string]: unknown }) => {
     }, delay);
   };
 }; */
+
+export const resetRoute = () => (window.location.href = window.location.origin);
