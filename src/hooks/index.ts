@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 
 export const useMount = (callback: () => void) => {
   useEffect(() => {
@@ -48,15 +48,16 @@ export const useDocumentTitle = (
   title: string,
   keepOnUmount: boolean = true
 ) => {
-  const oldTitle = document.title;
+  const oldTitle = useRef(document.title).current;
   useEffect(() => {
     document.title = title;
   }, [title]);
   useEffect(() => {
     return () => {
       if (!keepOnUmount) {
+        // 不加依赖项读到的oldTitle是最初的
         document.title = oldTitle;
       }
     };
-  }, []);
+  }, [keepOnUmount, oldTitle]);
 };
