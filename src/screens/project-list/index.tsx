@@ -5,14 +5,16 @@ import styled from "@emotion/styled";
 import { Typography } from "antd";
 import { useProjects } from "hooks/project";
 import { useUser } from "hooks/user";
-import { useUrlQueryParam } from "utils/url";
+import { useProjectSearchParam } from "./utils";
 
 export const ProjectListScreen = () => {
-  const [param, setParam] = useUrlQueryParam(["name", "personId"]);
-  const debounceParam = useDebounce(param, 200);
-  const { isLoading, isError, data: list, error } = useProjects(debounceParam);
-  const { data: users } = useUser();
   useDocumentTitle("项目列表", false);
+  const [param, setParam] = useProjectSearchParam();
+  const { isLoading, isError, data: list, error } = useProjects(
+    useDebounce(param, 200)
+  );
+  const { data: users } = useUser();
+
   return (
     <Container>
       <h1>项目列表</h1>
