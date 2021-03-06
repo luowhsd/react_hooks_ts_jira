@@ -10,7 +10,7 @@ import { useProjectSearchParam } from "./utils";
 export const ProjectListScreen = () => {
   useDocumentTitle("项目列表", false);
   const [param, setParam] = useProjectSearchParam();
-  const { isLoading, isError, data: list, error } = useProjects(
+  const { isLoading, isError, data: list, error, retry } = useProjects(
     useDebounce(param, 200)
   );
   const { data: users } = useUser();
@@ -27,6 +27,7 @@ export const ProjectListScreen = () => {
         <Typography.Text type={"danger"}>{error?.message}</Typography.Text>
       )}
       <List
+        refresh={retry}
         loading={isLoading}
         users={users || []}
         dataSource={list || []}

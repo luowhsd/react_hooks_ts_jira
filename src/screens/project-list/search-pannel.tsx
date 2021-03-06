@@ -1,9 +1,6 @@
 import { Input, Select, Form } from "antd";
-import { IdSelect } from "components/id-select";
 import { UseSelect } from "components/user-select";
 import { Project } from "./list";
-
-const { Option } = Select;
 
 export interface User {
   id: number;

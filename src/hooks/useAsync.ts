@@ -25,6 +25,8 @@ export const useAsync = <D>(
     ...initialState,
   });
 
+  const [retry, setRetry] = useState(() => () => {});
+
   const setData = (data: D) =>
     setState({
       stat: "success",
@@ -40,11 +42,19 @@ export const useAsync = <D>(
     });
 
   // 用来触发异步请求
-  const run = (promise: Promise<D>) => {
+  const run = (
+    promise: Promise<D>,
+    runConfig?: { retry: () => Promise<D> }
+  ) => {
     if (!promise || !promise.then) {
       throw new Error("请传入 promise 类型数组");
     }
     setState({ ...state, stat: "loading" });
+    setRetry(() => () => {
+      if (runConfig?.retry) {
+        run(runConfig?.retry(), runConfig);
+      }
+    });
     return promise
       .then((data) => {
         setData(data);
@@ -63,6 +73,7 @@ export const useAsync = <D>(
     isLoading: state.stat === "loading",
     isError: state.stat === "error",
     isSuccess: state.stat === "success",
+    retry,
     run,
     setData,
     setError,

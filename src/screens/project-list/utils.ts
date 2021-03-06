@@ -1,5 +1,8 @@
+import { useAsync } from "hooks/useAsync";
 import { useMemo } from "react";
+import { useHttp } from "utils/http";
 import { useUrlQueryParam } from "utils/url";
+import { Project } from "./list";
 export const useProjectSearchParam = () => {
   const [param, setParam] = useUrlQueryParam(["name", "personId"]);
   const projectsParam = {
@@ -7,4 +10,38 @@ export const useProjectSearchParam = () => {
     personId: Number(param.personId) || undefined,
   };
   return [useMemo(() => projectsParam, [param]), setParam] as const;
+};
+
+export const useEditProject = () => {
+  const { run, ...asyncResult } = useAsync();
+  const client = useHttp();
+  const mutate = (params: Partial<Project>) => {
+    return run(
+      client(`projects/${params.id}`, {
+        data: params,
+        method: "PATCH",
+      })
+    );
+  };
+  return {
+    mutate,
+    ...asyncResult,
+  };
+};
+
+export const useAddProject = () => {
+  const { run, ...asyncResult } = useAsync();
+  const client = useHttp();
+  const mutate = (params: Partial<Project>) => {
+    return run(
+      client(`projects/${params.id}`, {
+        data: params,
+        method: "POST",
+      })
+    );
+  };
+  return {
+    mutate,
+    ...asyncResult,
+  };
 };

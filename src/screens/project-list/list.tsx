@@ -5,6 +5,8 @@ import { User } from "screens/project-list/search-pannel";
 // react是核心库，计算的结果给react-dom消费
 // react-router也是一样
 import { Link } from "react-router-dom";
+import { Pin } from "components/pin";
+import { useEditProject } from "./utils";
 
 export interface Project {
   id: number;
@@ -17,13 +19,28 @@ export interface Project {
 
 interface ListProps extends TableProps<Project> {
   users: User[];
+  refresh?: () => void;
 }
 
 export const List = ({ users, ...props }: ListProps) => {
+  const { mutate } = useEditProject();
+  const pinProject = (id: number) => (pin: boolean) =>
+    mutate({ id, pin }).then(props.refresh);
   return (
     <Table
       pagination={false}
       columns={[
+        {
+          title: <Pin checked={true} disabled={true} />,
+          render: (value, project) => {
+            return (
+              <Pin
+                checked={project.pin}
+                onCheckedChange={pinProject(project.id)}
+              />
+            );
+          },
+        },
         {
           title: "名称",
           dataIndex: "name",
