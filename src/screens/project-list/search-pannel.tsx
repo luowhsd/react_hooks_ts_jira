@@ -1,4 +1,4 @@
-import { Input, Select, Form } from "antd";
+import { Input, Form } from "antd";
 import { UseSelect } from "components/user-select";
 import { Project } from "./list";
 
@@ -17,7 +17,7 @@ interface SearchPannelProps {
   param: Partial<Pick<Project, "name" | "personId">>;
   setParam: (param: SearchPannelProps["param"]) => void;
 }
-export const SearchPannel = ({ users, param, setParam }: SearchPannelProps) => {
+export const SearchPannel = ({ param, setParam }: SearchPannelProps) => {
   return (
     <Form style={{ marginBottom: "2rem" }} layout={"inline"}>
       <Form.Item>

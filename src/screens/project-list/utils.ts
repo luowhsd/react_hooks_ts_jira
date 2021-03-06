@@ -5,11 +5,15 @@ import { useUrlQueryParam } from "utils/url";
 import { Project } from "./list";
 export const useProjectSearchParam = () => {
   const [param, setParam] = useUrlQueryParam(["name", "personId"]);
-  const projectsParam = {
-    ...param,
-    personId: Number(param.personId) || undefined,
-  };
-  return [useMemo(() => projectsParam, [param]), setParam] as const;
+  return [
+    useMemo(() => {
+      return {
+        ...param,
+        personId: Number(param.personId) || undefined,
+      };
+    }, [param]),
+    setParam,
+  ] as const;
 };
 
 export const useEditProject = () => {
