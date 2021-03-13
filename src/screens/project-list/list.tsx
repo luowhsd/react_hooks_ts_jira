@@ -1,4 +1,4 @@
-import { Table, TableProps } from "antd";
+import { Dropdown, Menu, Table, TableProps } from "antd";
 import dayjs from "dayjs";
 import { User } from "screens/project-list/search-pannel";
 // react-router 和 react-router-dom的关系就和 react 与 react-dom react-native react-vr...
@@ -7,6 +7,7 @@ import { User } from "screens/project-list/search-pannel";
 import { Link } from "react-router-dom";
 import { Pin } from "components/pin";
 import { useEditProject } from "./utils";
+import { ButtonNoPadding } from "components/lib";
 
 export interface Project {
   id: number;
@@ -20,9 +21,10 @@ export interface Project {
 interface ListProps extends TableProps<Project> {
   users: User[];
   refresh?: () => void;
+  setProjectModalOpen: (isOpen: boolean) => void;
 }
 
-export const List = ({ users, ...props }: ListProps) => {
+export const List = ({ users, setProjectModalOpen, ...props }: ListProps) => {
   const { mutate } = useEditProject();
   const pinProject = (id: number) => (pin: boolean) =>
     mutate({ id, pin }).then(props.refresh);
@@ -74,6 +76,28 @@ export const List = ({ users, ...props }: ListProps) => {
                   ? dayjs(project.created).format("YYYY-MM-DD")
                   : "无"}
               </span>
+            );
+          },
+        },
+        {
+          render(value, project) {
+            return (
+              <Dropdown
+                overlay={
+                  <Menu>
+                    <Menu.Item key={"edit"}>
+                      <ButtonNoPadding
+                        type={"link"}
+                        onClick={() => setProjectModalOpen(true)}
+                      >
+                        编辑
+                      </ButtonNoPadding>
+                    </Menu.Item>
+                  </Menu>
+                }
+              >
+                <ButtonNoPadding type={"link"}>...</ButtonNoPadding>
+              </Dropdown>
             );
           },
         },
