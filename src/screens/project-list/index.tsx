@@ -2,14 +2,12 @@ import { List } from "./list";
 import { SearchPannel } from "./search-pannel";
 import { useDebounce, useDocumentTitle } from "hooks";
 import styled from "@emotion/styled";
-import { Typography, Row, Button } from "antd";
+import { Typography, Row } from "antd";
 import { useProjects } from "hooks/project";
 import { useUser } from "hooks/user";
 import { useProjectSearchParam } from "./utils";
 
-export const ProjectListScreen = (props: {
-  setProjectModalOpen: (isOpen: boolean) => void;
-}) => {
+export const ProjectListScreen = (props: { projectButton: JSX.Element }) => {
   useDocumentTitle("项目列表", false);
   const [param, setParam] = useProjectSearchParam();
   const { isLoading, isError, data: list, error, retry } = useProjects(
@@ -21,9 +19,7 @@ export const ProjectListScreen = (props: {
     <Container>
       <Row justify={"space-between"}>
         <h1>项目列表</h1>
-        <Button onClick={() => props.setProjectModalOpen(true)}>
-          打开项目
-        </Button>
+        {props.projectButton}
       </Row>
       <SearchPannel
         users={users || []}
@@ -34,7 +30,7 @@ export const ProjectListScreen = (props: {
         <Typography.Text type={"danger"}>{error?.message}</Typography.Text>
       )}
       <List
-        setProjectModalOpen={props.setProjectModalOpen}
+        projectButton={props.projectButton}
         refresh={retry}
         loading={isLoading}
         users={users || []}
