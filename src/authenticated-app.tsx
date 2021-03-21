@@ -1,7 +1,6 @@
 import styled from "@emotion/styled";
 import { ButtonNoPadding, Row } from "components/lib";
 import { useAuth } from "context/auth-context";
-import { useState } from "react";
 import { ProjectListScreen } from "screens/project-list";
 import { ReactComponent as SoftWareLogo } from "assets/software-logo.svg";
 import { Button, Dropdown, Menu } from "antd";
@@ -11,16 +10,22 @@ import { ProjectScreen } from "screens/project";
 import { resetRoute } from "utils";
 import { ProjectModal } from "screens/project-list/project-modal";
 import { ProjectPopover } from "components/project-popover";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  projectListActions,
+  selectProjectModalOpen,
+} from "screens/project-list/project-list.slice";
 
 export const AuthenticatedApp = () => {
-  const [projectModalOpen, setProjectModalOpen] = useState(false);
+  const projectModalOpen = useSelector(selectProjectModalOpen);
+  const dispatch = useDispatch();
   return (
     <Container>
       <PageHeader
         projectButton={
           <ButtonNoPadding
             type={"link"}
-            onClick={() => setProjectModalOpen(true)}
+            onClick={() => dispatch(projectListActions.openProjectModal())}
           >
             创建项目
           </ButtonNoPadding>
@@ -36,7 +41,9 @@ export const AuthenticatedApp = () => {
                   projectButton={
                     <ButtonNoPadding
                       type={"link"}
-                      onClick={() => setProjectModalOpen(true)}
+                      onClick={() =>
+                        dispatch(projectListActions.openProjectModal())
+                      }
                     >
                       创建项目
                     </ButtonNoPadding>
@@ -53,7 +60,7 @@ export const AuthenticatedApp = () => {
         </Router>
       </Main>
       <ProjectModal
-        onClose={() => setProjectModalOpen(false)}
+        onClose={() => dispatch(projectListActions.closeProjectModal())}
         projectModalOpen={projectModalOpen}
       />
     </Container>
