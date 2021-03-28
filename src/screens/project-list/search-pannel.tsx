@@ -1,5 +1,5 @@
 import { Input, Form } from "antd";
-import { UseSelect } from "components/user-select";
+import { UserSelect } from "components/user-select";
 import { Project } from "./list";
 
 export interface User {
@@ -34,7 +34,7 @@ export const SearchPannel = ({ param, setParam }: SearchPannelProps) => {
         ></Input>
       </Form.Item>
       <Form.Item>
-        <UseSelect
+        <UserSelect
           defaultOptionName={"负责人"}
           value={param.personId}
           onChange={(value) =>

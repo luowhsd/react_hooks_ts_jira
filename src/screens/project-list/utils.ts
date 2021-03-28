@@ -1,5 +1,5 @@
-import { useAsync } from "hooks/useAsync";
 import { useMemo } from "react";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useHttp } from "utils/http";
 import { useUrlQueryParam } from "utils/url";
 import { Project } from "./list";
@@ -17,48 +17,71 @@ export const useProjectSearchParam = () => {
 };
 
 export const useEditProject = () => {
-  const { run, ...asyncResult } = useAsync();
   const client = useHttp();
-  const mutate = (params: Partial<Project>) => {
-    return run(
+  const queryClient = useQueryClient();
+  return useMutation(
+    (params: Partial<Project>) =>
       client(`projects/${params.id}`, {
-        data: params,
         method: "PATCH",
-      })
-    );
-  };
-  return {
-    mutate,
-    ...asyncResult,
-  };
+        data: params,
+      }),
+    {
+      onSuccess: () => queryClient.invalidateQueries("projects"),
+    }
+  );
 };
 
 export const useAddProject = () => {
-  const { run, ...asyncResult } = useAsync();
   const client = useHttp();
-  const mutate = (params: Partial<Project>) => {
-    return run(
-      client(`projects/${params.id}`, {
+  const queryClient = useQueryClient();
+  return useMutation(
+    (params: Partial<Project>) =>
+      client(`projects`, {
         data: params,
         method: "POST",
-      })
-    );
-  };
-  return {
-    mutate,
-    ...asyncResult,
-  };
+      }),
+    {
+      onSuccess: () => queryClient.invalidateQueries("projects"),
+    }
+  );
 };
 
 export const useProjectModal = () => {
   const [{ projectCreate }, setProjectModalOpen] = useUrlQueryParam([
     "projectCreate",
   ]);
+  const [{ editingProjectId }, setEditingProjectId] = useUrlQueryParam([
+    "editingProjectId",
+  ]);
+
+  const { data: editingProject, isLoading } = useProject(
+    Number(editingProjectId)
+  );
+
   const open = () => setProjectModalOpen({ projectCreate: true });
-  const close = () => setProjectModalOpen({ projectCreate: undefined });
+  const close = () => {
+    setProjectModalOpen({ projectCreate: undefined });
+    setEditingProjectId({ editingProjectId: undefined });
+  };
+  const startEdit = (id: number) =>
+    setEditingProjectId({ editingProjectId: id });
   return {
-    projectModalOpen: projectCreate === "true",
+    projectModalOpen: projectCreate === "true" || Boolean(editingProjectId),
     open,
     close,
+    startEdit,
+    editingProject,
+    isLoading,
   };
+};
+
+export const useProject = (id?: number) => {
+  const client = useHttp();
+  return useQuery<Project>(
+    ["project", { id }],
+    () => client(`projects/${id}`),
+    {
+      enabled: Boolean(id),
+    }
+  );
 };

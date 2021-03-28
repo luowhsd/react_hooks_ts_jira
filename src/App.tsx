@@ -1,4 +1,3 @@
-import React from "react";
 import { UnauthenticatedApp } from "unauthenticated-app";
 import { AuthenticatedApp } from "authenticated-app";
 import { useAuth } from "context/auth-context";
