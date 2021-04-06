@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 import { useMutation, useQuery, useQueryClient } from "react-query";
+import { useSearchParams } from "react-router-dom";
 import { useHttp } from "utils/http";
 import { useUrlQueryParam } from "utils/url";
 import { Project } from "./list";
@@ -54,15 +55,16 @@ export const useProjectModal = () => {
     "editingProjectId",
   ]);
 
+  const [, setUrlParams] = useSearchParams();
+
   const { data: editingProject, isLoading } = useProject(
     Number(editingProjectId)
   );
 
   const open = () => setProjectModalOpen({ projectCreate: true });
-  const close = () => {
-    setProjectModalOpen({ projectCreate: undefined });
-    setEditingProjectId({ editingProjectId: undefined });
-  };
+
+  const close = () => setUrlParams({ projectCreate: "", editingProjectId: "" });
+
   const startEdit = (id: number) =>
     setEditingProjectId({ editingProjectId: id });
   return {
