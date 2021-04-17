@@ -1,8 +1,13 @@
 import { useMemo } from "react";
-import { useMutation, useQuery, useQueryClient } from "react-query";
+import { QueryKey, useMutation, useQuery } from "react-query";
 import { useSearchParams } from "react-router-dom";
 import { useHttp } from "utils/http";
 import { useUrlQueryParam } from "utils/url";
+import {
+  useAddConfig,
+  useDeleteConfig,
+  useEditConfig,
+} from "utils/use-optimistic-options";
 import { Project } from "./list";
 export const useProjectSearchParam = () => {
   const [param, setParam] = useUrlQueryParam(["name", "personId"]);
@@ -17,33 +22,43 @@ export const useProjectSearchParam = () => {
   ] as const;
 };
 
-export const useEditProject = () => {
+export const useProjectQueryKey = () => {
+  const [params] = useProjectSearchParam();
+  return ["projects", params];
+};
+
+export const useEditProject = (queryKey: QueryKey) => {
   const client = useHttp();
-  const queryClient = useQueryClient();
   return useMutation(
     (params: Partial<Project>) =>
       client(`projects/${params.id}`, {
         method: "PATCH",
         data: params,
       }),
-    {
-      onSuccess: () => queryClient.invalidateQueries("projects"),
-    }
+    useEditConfig(queryKey)
   );
 };
 
-export const useAddProject = () => {
+export const useAddProject = (queryKey: QueryKey) => {
   const client = useHttp();
-  const queryClient = useQueryClient();
   return useMutation(
     (params: Partial<Project>) =>
       client(`projects`, {
         data: params,
         method: "POST",
       }),
-    {
-      onSuccess: () => queryClient.invalidateQueries("projects"),
-    }
+    useAddConfig(queryKey)
+  );
+};
+
+export const useDeleteProject = (queryKey: QueryKey) => {
+  const client = useHttp();
+  return useMutation(
+    ({ id }: { id: number }) =>
+      client(`projects/${id}`, {
+        method: "DELETE",
+      }),
+    useDeleteConfig(queryKey)
   );
 };
 
