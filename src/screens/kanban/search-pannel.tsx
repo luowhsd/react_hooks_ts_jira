@@ -1,5 +1,5 @@
 import { useSetUrlSearchParam } from "utils/url";
-import { Row } from "components/lib";
+import { Row, ScreenContainer } from "components/lib";
 import { Button, Input } from "antd";
 import { UserSelect } from "components/user-select";
 import { useTasksSearchParams } from "./utils";
@@ -18,7 +18,7 @@ export const SearchPanel = () => {
   };
 
   return (
-    <Row marginBottom={4} gap={true}>
+    <Row marginBottom={4} gap={true} style={{ marginBottom: "1rem" }}>
       <Input
         style={{ width: "20rem" }}
         placeholder={"任务名"}
